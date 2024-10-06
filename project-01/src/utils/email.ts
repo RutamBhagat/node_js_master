@@ -51,6 +51,7 @@ export async function sendVerificationEmail(baseUrl: string, name: string, email
     return res.$metadata.httpStatusCode;
   }
   catch (_err) {
+    console.error(_err);
     return 500;
   }
 }
