@@ -1,5 +1,6 @@
 import {
   deleteAllUnverifiedUsers,
+  getAUser,
   getAllUsers,
   getAllVerifiedUsers,
 } from '@/services/admin-services';
@@ -16,6 +17,14 @@ export const handleGetAllUsers = createHandler(async (_req, res) => {
   const users = await getAllUsers();
   res.status(200).json({
     users,
+  });
+});
+
+export const handleGetAUser = createHandler(async (req, res) => {
+  const userId = req.params.id as string;
+  const user = await getAUser(userId);
+  res.status(200).json({
+    user,
   });
 });
 

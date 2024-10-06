@@ -3,9 +3,10 @@ import type { Config } from 'drizzle-kit';
 
 export default {
   schema: './src/schema/*',
-  out: './drizzle',
-  driver: 'pg',
+  dialect: 'postgresql',
   dbCredentials: {
-    connectionString: process.env.DB_URL,
+    url: process.env.DB_URL,
   },
+  // tablesFilter: ['project_1_*'],
+  out: './drizzle',
 } satisfies Config;

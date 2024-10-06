@@ -1,6 +1,7 @@
 import type { Router } from 'express';
 import {
   handleDeleteAllUnverifiedUsers,
+  handleGetAUser,
   handleGetAllUsers,
   handleGetAllVerifiedUsers,
 } from '@/controllers/admin-controllers';
@@ -16,5 +17,6 @@ export default createRouter((router: Router) => {
 
   router.get('/all-users', handleGetAllUsers);
   router.get('/all-verfied-users', handleGetAllVerifiedUsers);
+  router.get('/user/:id', handleGetAUser);
   router.delete('/remove-unverified-users', handleDeleteAllUnverifiedUsers);
 });

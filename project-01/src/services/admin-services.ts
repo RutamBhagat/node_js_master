@@ -29,6 +29,20 @@ export async function getAllUsers() {
     .from(users);
 }
 
+export async function getAUser(id: string) {
+  return await db
+    .select({
+      id: users.id,
+      name: users.name,
+      email: users.email,
+      isVerified: users.isVerified,
+      isAdmin: users.isAdmin,
+      createdAt: users.createdAt,
+    })
+    .from(users)
+    .where(eq(users.id, id));
+}
+
 export async function deleteAllUnverifiedUsers() {
   const deletedUsers = await db
     .delete(users)
