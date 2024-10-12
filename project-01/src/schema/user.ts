@@ -1,5 +1,5 @@
 import type { InferSelectModel } from 'drizzle-orm';
-import { pgEnum, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
+import { boolean, pgEnum, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
 import { createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 
@@ -7,13 +7,18 @@ export const Gender = pgEnum('gender', ['MALE', 'FEMALE']);
 
 export const users = pgTable('users', {
   id: uuid('id').notNull().primaryKey().defaultRandom(),
-  first_name: varchar('first_name', { length: 255 }).notNull(),
-  last_name: varchar('last_name', { length: 255 }).notNull(),
+  firstName: varchar('firstName', { length: 255 }).notNull(),
+  lastName: varchar('lastName', { length: 255 }).notNull(),
   email: text('email').notNull().unique(),
   gender: Gender('gender').notNull(),
-  job_title: varchar('job_title', { length: 255 }).notNull(),
-  created_at: timestamp('created_at').notNull().defaultNow(),
-  updated_at: timestamp('updated_at').notNull().defaultNow(),
+  jobTitle: varchar('jobTitle', { length: 255 }).notNull(),
+  isAdmin: boolean('is_admin').notNull().default(false),
+  password: text('password').notNull(),
+  isVerified: boolean('is_verified').notNull().default(false),
+  salt: text('salt').notNull(),
+  code: text('code').notNull(),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
 
 export const selectUserSchema = createSelectSchema(users, {
@@ -24,6 +29,7 @@ export const selectUserSchema = createSelectSchema(users, {
 export const verifyUserSchema = z.object({
   query: selectUserSchema.pick({
     email: true,
+    code: true,
   }),
 });
 
@@ -36,35 +42,44 @@ export const deleteUserSchema = z.object({
 export const loginSchema = z.object({
   body: selectUserSchema.pick({
     email: true,
+    password: true,
   }),
 });
 
 export const addUserSchema = z.object({
   body: selectUserSchema.pick({
-    first_name: true,
-    last_name: true,
+    firstName: true,
+    lastName: true,
     email: true,
     gender: true,
+    jobTitle: true,
+    password: true,
+    salt: true,
+    code: true
   }),
 });
 
 export const updateUserSchema = z.object({
   body: selectUserSchema.pick({
-    first_name: true,
-    last_name: true,
+    firstName: true,
+    lastName: true,
     email: true,
     gender: true,
-    job_title: true,
+    jobTitle: true,
+    password: true,
+    salt: true,
+    code: true
   }).partial(),
 });
 
 export const newUserSchema = z.object({
   body: selectUserSchema.pick({
-    first_name: true,
-    last_name: true,
+    firstName: true,
+    lastName: true,
     email: true,
     gender: true,
-    job_title: true,
+    jobTitle: true,
+    password: true,
   }),
 });
 

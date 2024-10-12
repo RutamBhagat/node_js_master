@@ -1,6 +1,13 @@
-import { type NewUser, users } from '@/schema/user';
+import process from 'node:process';
+import crypto from 'node:crypto';
+import argon2 from 'argon2';
+import { eq } from 'drizzle-orm';
+import { type NewUser, type UpdateUser, type User, users } from '@/schema/user';
 import { db } from '@/utils/db';
+import { sendVerificationEmail } from '@/utils/email';
 import { BackendError } from '@/utils/errors';
+import { sha256 } from '@/utils/hash';
+
 
 // export async function getUserByUserId(userId: string) {
 //   const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
@@ -12,54 +19,33 @@ import { BackendError } from '@/utils/errors';
 //   return user;
 // }
 
-// export async function addUser(user: NewUser) {
-//   const { password, ...userDetails } = user;
-
-//   const salt = crypto.randomBytes(32);
-//   const code = crypto.randomBytes(32).toString('hex');
-//   const hashedPassword = await argon2.hash(password, {
-//     salt,
-//   });
-
-//   const [newUser] = await db
-//     .insert(users)
-//     .values({
-//       ...userDetails,
-//       password: hashedPassword,
-//       salt: salt.toString('hex'),
-//       code,
-//     })
-//     .returning({
-//       id: users.id,
-//       name: users.name,
-//       email: users.email,
-//       code: users.code,
-//       isVerified: users.isVerified,
-//       isAdmin: users.isAdmin,
-//     });
-
-//   if (!newUser) {
-//     throw new BackendError('INTERNAL_ERROR', {
-//       message: 'Failed to add user',
-//     });
-//   }
-
-//   return { user: newUser, code };
-// }
-
 export async function addUser(user: NewUser) {
+  const { password, ...userDetails } = user;
+
+  const salt = crypto.randomBytes(32);
+  const code = crypto.randomBytes(32).toString('hex');
+  const hashedPassword = await argon2.hash(password, {
+    salt,
+  });
+
   const [newUser] = await db
     .insert(users)
     .values({
-      ...user,
+      ...userDetails,
+      password: hashedPassword,
+      salt: salt.toString('hex'),
+      code,
     })
     .returning({
       id: users.id,
-      first_name: users.first_name,
-      last_name: users.last_name,
+      firstName: users.firstName,
+      lastName: users.lastName,
       email: users.email,
       gender: users.gender,
-      job_title: users.job_title,
+      jobTitle: users.jobTitle,
+      code: users.code,
+      isVerified: users.isVerified,
+      isAdmin: users.isAdmin,
     });
 
   if (!newUser) {
@@ -68,8 +54,9 @@ export async function addUser(user: NewUser) {
     });
   }
 
-  return { user: newUser };
+  return { user: newUser, code };
 }
+
 
 // export async function verifyUser(email: string, code: string) {
 //   const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1);

@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-ses": "^3.504.0",
+    "@neondatabase/serverless": "^0.10.1",
     "@react-email/components": "^0.0.14",
     "@react-email/render": "^0.0.12",
     "@types/swagger-jsdoc": "^6.0.4",
