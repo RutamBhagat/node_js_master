@@ -1,0 +1,142 @@
+[
+    {
+        "first_name": "Roosevelt",
+        "last_name": "Aveson",
+        "email": "raveson0@hostgator.com",
+        "gender": "MALE",
+        "job_title": "Developer I"
+    },
+    {
+        "first_name": "Jillene",
+        "last_name": "Idenden",
+        "email": "jidenden1@usgs.gov",
+        "gender": "FEMALE",
+        "job_title": "Database Administrator III"
+    },
+    {
+        "first_name": "Hartwell",
+        "last_name": "Margrie",
+        "email": "hmargrie2@sina.com.cn",
+        "gender": "MALE",
+        "job_title": "Technical Writer"
+    },
+    {
+        "first_name": "Allie",
+        "last_name": "Chamney",
+        "email": "achamney3@friendfeed.com",
+        "gender": "MALE",
+        "job_title": "Software Engineer III"
+    },
+    {
+        "first_name": "Finley",
+        "last_name": "Edgerley",
+        "email": "fedgerley4@illinois.edu",
+        "gender": "MALE",
+        "job_title": "Senior Financial Analyst"
+    },
+    {
+        "first_name": "Erick",
+        "last_name": "Greystock",
+        "email": "egreystock5@prweb.com",
+        "gender": "MALE",
+        "job_title": "Payment Adjustment Coordinator"
+    },
+    {
+        "first_name": "Brianna",
+        "last_name": "Bewfield",
+        "email": "bbewfield6@privacy.gov.au",
+        "gender": "FEMALE",
+        "job_title": "Senior Developer"
+    },
+    {
+        "first_name": "Carlene",
+        "last_name": "Devonish",
+        "email": "cdevonish7@hp.com",
+        "gender": "FEMALE",
+        "job_title": "Sales Representative"
+    },
+    {
+        "first_name": "Gan",
+        "last_name": "Szwarc",
+        "email": "gszwarc8@yellowpages.com",
+        "gender": "MALE",
+        "job_title": "Quality Control Specialist"
+    },
+    {
+        "first_name": "Mindy",
+        "last_name": "Senyard",
+        "email": "msenyard9@boston.com",
+        "gender": "FEMALE",
+        "job_title": "Engineer II"
+    },
+    {
+        "first_name": "Holly-anne",
+        "last_name": "Haresign",
+        "email": "hharesigna@economist.com",
+        "gender": "FEMALE",
+        "job_title": "Executive Secretary"
+    },
+    {
+        "first_name": "Merell",
+        "last_name": "Ballefant",
+        "email": "mballefantb@home.pl",
+        "gender": "MALE",
+        "job_title": "Programmer IV"
+    },
+    {
+        "first_name": "Kipp",
+        "last_name": "Jarrel",
+        "email": "kjarrelc@blog.com",
+        "gender": "FEMALE",
+        "job_title": "Structural Analysis Engineer"
+    },
+    {
+        "first_name": "Gearard",
+        "last_name": "Hollow",
+        "email": "ghollowd@etsy.com",
+        "gender": "MALE",
+        "job_title": "Sales Representative"
+    },
+    {
+        "first_name": "Brod",
+        "last_name": "Moodie",
+        "email": "bmoodiee@merriam-webster.com",
+        "gender": "MALE",
+        "job_title": "Technical Writer"
+    },
+    {
+        "first_name": "Meggy",
+        "last_name": "Pengelley",
+        "email": "mpengelleyf@weebly.com",
+        "gender": "FEMALE",
+        "job_title": "Senior Sales Associate"
+    },
+    {
+        "first_name": "Phyllys",
+        "last_name": "Ruperti",
+        "email": "prupertig@foxnews.com",
+        "gender": "FEMALE",
+        "job_title": "Account Executive"
+    },
+    {
+        "first_name": "Ertha",
+        "last_name": "Pavlov",
+        "email": "epavlovh@flickr.com",
+        "gender": "FEMALE",
+        "job_title": "Assistant Media Planner"
+    },
+    {
+        "first_name": "Ike",
+        "last_name": "Crumbie",
+        "email": "icrumbiei@unicef.org",
+        "gender": "MALE",
+        "job_title": "Compensation Analyst"
+    },
+    {
+        "first_name": "Zia",
+        "last_name": "Stovine",
+        "email": "zstovinej@guardian.co.uk",
+        "gender": "FEMALE",
+        "job_title": "Community Outreach Specialist"
+    }
+]

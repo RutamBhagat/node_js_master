@@ -1,12 +1,6 @@
-// import process from 'node:process';
-// import crypto from 'node:crypto';
-// import argon2 from 'argon2';
-// import { eq } from 'drizzle-orm';
-// import { type NewUser, type UpdateUser, type User, users } from '@/schema/user';
-// import { db } from '@/utils/db';
-// import { sendVerificationEmail } from '@/utils/email';
-// import { BackendError } from '@/utils/errors';
-// import { sha256 } from '@/utils/hash';
+import { type NewUser, users } from '@/schema/user';
+import { db } from '@/utils/db';
+import { BackendError } from '@/utils/errors';
 
 // export async function getUserByUserId(userId: string) {
 //   const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
@@ -52,6 +46,30 @@
 
 //   return { user: newUser, code };
 // }
+
+export async function addUser(user: NewUser) {
+  const [newUser] = await db
+    .insert(users)
+    .values({
+      ...user,
+    })
+    .returning({
+      id: users.id,
+      first_name: users.first_name,
+      last_name: users.last_name,
+      email: users.email,
+      gender: users.gender,
+      job_title: users.job_title,
+    });
+
+  if (!newUser) {
+    throw new BackendError('INTERNAL_ERROR', {
+      message: 'Failed to add user',
+    });
+  }
+
+  return { user: newUser };
+}
 
 // export async function verifyUser(email: string, code: string) {
 //   const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1);
@@ -135,7 +153,7 @@
 //       email: users.email,
 //       isAdmin: users.isAdmin,
 //       isVerified: users.isVerified,
-//       createdAt: users.createdAt,
+//       created_at: users.created_at,
 //     });
 
 //   if (!updatedUser) {

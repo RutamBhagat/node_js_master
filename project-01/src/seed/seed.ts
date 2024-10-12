@@ -1,14 +1,17 @@
 import process from 'node:process';
 import consola from 'consola';
-// import { mockUsers } from './mock/mock_users';
-// import { addUser } from '@/services/user-services';
+import mockUsersData from './mock/mock_users.json';
+import type { NewUser } from '@/schema/user';
+import { addUser } from '@/services/user-services';
+
+export const mockUsers: NewUser[] = mockUsersData as NewUser[];
 
 async function main() {
   consola.log('Seed start');
   try {
-    // for (const user of mockUsers) {
-    // await addUser(user);
-    // }
+    for (const user of mockUsers) {
+      await addUser(user);
+    }
 
     consola.log('Seed done');
   }
