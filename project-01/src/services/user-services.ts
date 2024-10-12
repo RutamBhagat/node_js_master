@@ -14,25 +14,12 @@ import { sha256 } from '@/utils/hash';
 //   return user;
 // }
 
-export async function getUserByEmail(email: string): Promise<User | undefined> {
+export async function getUserByEmail(email: string){
   const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1);
   return user
 }
 
-export async function addUser(user: NewUser): Promise<{
-  user: {
-      id: string,
-      firstName: string,
-      lastName: string,
-      email: string,
-      gender: "MALE" | "FEMALE",
-      jobTitle: string,
-      code: string,
-      isVerified: boolean,
-      isAdmin: boolean,
-    },
-  code: string
-}> {
+export async function addUser(user: NewUser) {
   const { password, ...userDetails } = user;
 
   const salt = crypto.randomBytes(32);

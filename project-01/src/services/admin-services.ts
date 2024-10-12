@@ -29,22 +29,6 @@ import { db } from '@/utils/db';
 //     .from(users);
 // }
 
-
-/**
- * Retrieves all users from the database
- * @returns {Promise<Array<{
- *   id: string,
- *   firstName: string,
- *   lastName: string,
- *   email: string,
- *   gender: string,
- *   jobTitle: string,
- *   isVerified: boolean,
- *   isAdmin: boolean,
- *   createdAt: Date,  
- *   updatedAt: Date
- * }>>} An array of user objects
- */
 export async function getAllUsers() {
   return await db
     .select({
@@ -61,23 +45,6 @@ export async function getAllUsers() {
     })
     .from(users);
 }
-
-/**
- * Retrieves a user from the database by id 
- * @param {string} id The id of the user to retrieve
- * @returns {Promise<{
- *   id: string,
- *   firstName: string,
- *   lastName: string,
- *   email: string,
- *   gender: string,
- *   jobTitle: string,
- *   isVerified: boolean,
- *   isAdmin: boolean,
- *   createdAt: Date,  
- *   updatedAt: Date
- * }>} The user object  
- */
 
 export async function getAUser(id: string) {
   return await db
