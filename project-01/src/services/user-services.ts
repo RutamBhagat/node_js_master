@@ -4,9 +4,9 @@ import argon2 from 'argon2';
 import { eq } from 'drizzle-orm';
 import { type NewUser, type UpdateUser, type User, users } from '@/schema/user';
 import { db } from '@/utils/db';
-import { sendVerificationEmail } from '@/utils/email';
+// import { sendVerificationEmail } from '@/utils/email';
 import { BackendError } from '@/utils/errors';
-import { sha256 } from '@/utils/hash';
+import { sha256 } from '@/utils/hash'; 
 
 
 // export async function getUserByUserId(userId: string) {
@@ -14,12 +14,25 @@ import { sha256 } from '@/utils/hash';
 //   return user;
 // }
 
-// export async function getUserByEmail(email: string) {
-//   const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1);
-//   return user;
-// }
+export async function getUserByEmail(email: string): Promise<User | undefined> {
+  const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1);
+  return user
+}
 
-export async function addUser(user: NewUser) {
+export async function addUser(user: NewUser): Promise<{
+  user: {
+      id: string,
+      firstName: string,
+      lastName: string,
+      email: string,
+      gender: "MALE" | "FEMALE",
+      jobTitle: string,
+      code: string,
+      isVerified: boolean,
+      isAdmin: boolean,
+    },
+  code: string
+}> {
   const { password, ...userDetails } = user;
 
   const salt = crypto.randomBytes(32);
@@ -91,20 +104,20 @@ export async function addUser(user: NewUser) {
 //   }
 // }
 
-// export async function deleteUser(email: string) {
-//   const user = await getUserByEmail(email);
+export async function deleteUser(email: string) {
+  const user = await getUserByEmail(email);
 
-//   if (!user)
-//     throw new BackendError('USER_NOT_FOUND');
+  if (!user)
+    throw new BackendError('USER_NOT_FOUND');
 
-//   const [deletedUser] = await db.delete(users).where(eq(users.email, email)).returning({
-//     id: users.id,
-//     name: users.name,
-//     email: users.email,
-//   });
+  const [deletedUser] = await db.delete(users).where(eq(users.email, email)).returning({
+    id: users.id,
+    name: users.firstName,
+    email: users.email,
+  });
 
-//   return deletedUser;
-// }
+  return deletedUser;
+}
 
 // export async function updateUser(user: User, { name, email, password }: UpdateUser) {
 //   let code: string | undefined;

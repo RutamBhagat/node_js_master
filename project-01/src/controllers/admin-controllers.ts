@@ -27,6 +27,7 @@ import { createHandler } from '@/utils/create';
  *           description: The user's email
  *         gender:
  *           type: string
+ *           enum: [MALE, FEMALE]
  *           description: The user's gender
  *         jobTitle:  
  *           type: string
@@ -37,6 +38,12 @@ import { createHandler } from '@/utils/create';
  *         isAdmin:
  *           type: boolean
  *           description: Whether the user is an admin  
+ *         salt:
+ *           type: string
+ *           description: The user's salt
+ *         code:
+ *           type: string 
+ *           description: The user's code
  *         createdAt:
  *           type: string
  *           format: date-time
