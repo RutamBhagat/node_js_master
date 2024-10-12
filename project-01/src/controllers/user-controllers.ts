@@ -1,86 +1,14 @@
-import process from 'node:process';
-import { Buffer } from 'node:buffer';
-import { render } from '@react-email/render';
-import argon2 from 'argon2';
-import {
-  type User,
-  deleteUserSchema,
-  loginSchema,
-  newUserSchema,
-  updateUserSchema,
-  verifyUserSchema,
-} from '@/schema/user';
-import {
-  addUser,
-  deleteUser,
-  getUserByEmail,
-//   updateUser,
-//   verifyUser,
-} from '@/services/user-services';
-// import { UserVerified } from '@/templates/user-verified';
-import { createHandler } from '@/utils/create';
-// import { sendVerificationEmail } from '@/utils/email';
-import { BackendError, getStatusFromErrorCode } from '@/utils/errors';
-import generateToken from '@/utils/jwt';
+import type { newUserSchema } from '@/schema/user';
+import type { Request, Response } from 'express';
+import type { z } from 'zod';
+import type { UserRes } from './admin-controllers';
+import { addUser, getUserByEmail } from '@/services/user-services';
+import { BackendError } from '@/utils/errors';
 
+// Infer the type of the request body from newUserSchema
+export type NewUserRequestBody = z.infer<typeof newUserSchema>['body'];
 
-/**
- * @swagger
- * components:
- *   schemas:
- *     NewUserBody:
- *       type: object
- *       required:
- *         - firstName
- *         - lastName
- *         - email
- *         - gender
- *         - jobTitle
- *         - password
- *       properties:
- *         firstName:
- *           type: string
- *           description: The user's first name
- *         lastName:
- *           type: string
- *           description: The user's last name
- *         email: 
- *           type: string
- *           description: The user's email
- *         gender:
- *           type: string
- *           enum: [MALE, FEMALE]
- *           description: The user's gender
- *         jobTitle:  
- *           type: string
- *           description: The user's job title
- *         password:
- *           type: string
- *           description: The user's password
- */
-
-/**
- * Creates a new user
- * @swagger
- * /api/user/create:
- *   post:
- *     summary: Create a new user
- *     tags: [User]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/NewUserBody'
- *     responses:
- *       201:
- *         description: The user was created successfully
- *       400:
- *         description: The request is invalid
- *       500:
- *         description: Server error
- */
-export const handleAddUser = createHandler(newUserSchema, async (req, res) => {
+export async function handleAddUser(req: Request<object, object, NewUserRequestBody>, res: Response<UserRes>) {
   const user = req.body;
 
   const existingUser = await getUserByEmail(user.email);
@@ -91,26 +19,26 @@ export const handleAddUser = createHandler(newUserSchema, async (req, res) => {
     });
   }
 
-  const { user: addedUser, code } = await addUser(user);
+  const { user: addedUser } = await addUser(user);
 
-//   const status = await sendVerificationEmail(
-//     process.env.API_BASE_URL,
-//     addedUser.firstName,
-//     addedUser.lastName,
-//     addedUser.email,
-//     code,
-//   );
+  // Uncomment and implement email verification if needed
+  // const status = await sendVerificationEmail(
+  //   process.env.API_BASE_URL,
+  //   addedUser.firstName,
+  //   addedUser.lastName,
+  //   addedUser.email,
+  //   code,
+  // );
 
-//   if (status !== 200) {
-//     await deleteUser(addedUser.email);
-//     throw new BackendError('INTERNAL_ERROR', {
-//       message: 'Failed to signup user',
-//     });
-//   }
+  // if (status !== 200) {
+  //   await deleteUser(addedUser.email);
+  //   throw new BackendError('INTERNAL_ERROR', {
+  //     message: 'Failed to signup user',
+  //   });
+  // }
 
   res.status(201).json(addedUser);
-});
-
+}
 
 // export const handleUserLogin = createHandler(loginSchema, async (req, res) => {
 //   const { email, password } = req.body;
@@ -128,7 +56,6 @@ export const handleAddUser = createHandler(newUserSchema, async (req, res) => {
 //   const token = generateToken(user.id);
 //   res.status(200).json({ token });
 // });
-
 
 // export const handleVerifyUser = createHandler(verifyUserSchema, async (req, res) => {
 //   try {

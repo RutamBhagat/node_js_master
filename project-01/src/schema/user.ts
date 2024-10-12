@@ -55,7 +55,7 @@ export const addUserSchema = z.object({
     jobTitle: true,
     password: true,
     salt: true,
-    code: true
+    code: true,
   }),
 });
 
@@ -68,7 +68,7 @@ export const updateUserSchema = z.object({
     jobTitle: true,
     password: true,
     salt: true,
-    code: true
+    code: true,
   }).partial(),
 });
 

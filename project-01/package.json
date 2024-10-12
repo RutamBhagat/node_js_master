@@ -12,9 +12,12 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "db:seed": "bun run src/seed/seed.ts"
+    "db:seed": "bun run src/seed/seed.ts",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
+    "@antfu/eslint-config": "^3.7.3",
     "@aws-sdk/client-ses": "^3.504.0",
     "@neondatabase/serverless": "^0.10.1",
     "@react-email/components": "^0.0.14",
@@ -50,6 +53,6 @@
     "esbuild": "^0.20.0",
     "pg": "^8.11.3",
     "tsx": "^4.7.0",
-    "typescript": "^5.3.3"
+    "typescript": "5.3.3"
   }
 }

@@ -1,5 +1,5 @@
-import process from 'node:process';
 import type { Config } from 'drizzle-kit';
+import process from 'node:process';
 
 export default {
   schema: './src/schema/*',

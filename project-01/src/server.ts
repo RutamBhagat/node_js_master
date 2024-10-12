@@ -1,15 +1,17 @@
 import process from 'node:process';
+import routes from '@/routes/routes';
+import { errorHandler, handle404Error } from '@/utils/errors';
 import consola from 'consola';
 import cors from 'cors';
 import express from 'express';
 import rateLimit from 'express-rate-limit';
 import { mw as requestIp } from 'request-ip';
+import { TspecDocsMiddleware } from 'tspec';
 import { logger } from './utils/logger';
-import { errorHandler, handle404Error } from '@/utils/errors';
-import routes from '@/routes/routes';
-import './utils/env';
+import '@/utils/env';
 
 const { PORT } = process.env;
+
 const app = express();
 
 app.use(express.json());
@@ -44,10 +46,18 @@ app.get('/healthcheck', (_req, res) => {
 });
 
 app.use('/api', routes);
-app.all('*', handle404Error);
-app.use(errorHandler);
 
-app.listen(PORT, () => {
-  consola.info(`Server running at http://localhost:${PORT}`);
-  consola.info(`Swagger UI available at http://localhost:${PORT}/docs`);
-});
+async function initServer() {
+  app.use('/api-docs', await TspecDocsMiddleware());
+  app.all('*', handle404Error);
+  app.use(errorHandler);
+
+  app.listen(PORT, () => {
+    consola.info(`Server running at http://localhost:${PORT}`);
+    consola.info(`Swagger UI available at http://localhost:${PORT}/api-docs`);
+  });
+}
+
+initServer();
+
+export default app;

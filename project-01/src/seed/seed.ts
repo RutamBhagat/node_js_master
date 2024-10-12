@@ -1,8 +1,8 @@
+import type { NewUser } from '@/schema/user';
 import process from 'node:process';
+import { addUser } from '@/services/user-services';
 import consola from 'consola';
 import mockUsersData from './mock/mock_users.json';
-import type { NewUser } from '@/schema/user';
-import { addUser } from '@/services/user-services';
 
 export const mockUsers: NewUser[] = mockUsersData as NewUser[];
 

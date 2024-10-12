@@ -1,5 +1,5 @@
-import consola from 'consola';
 import type { NextFunction, Request, Response } from 'express';
+import consola from 'consola';
 import postgres from 'postgres';
 import { ZodError } from 'zod';
 

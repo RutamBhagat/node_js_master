@@ -1,25 +1,25 @@
+import type { User } from '@/schema/user';
+import type { Request, Response } from 'express';
 import {
-//   deleteAllUnverifiedUsers,
-  getAUser,
   getAllUsers,
-//   getAllVerifiedUsers,
+  getAUser,
 } from '@/services/admin-services';
-import { createHandler } from '@/utils/create';
 
-export const handleGetAllUsers = createHandler(async (_req, res) => {
+interface PathParams { id: string }
+
+// Define a new type that omits the fields you don't want to expose
+export type UserRes = Omit<User, 'password' | 'salt' | 'code'>;
+
+export async function handleGetAllUsers(req: Request, res: Response<UserRes[]>) {
   const users = await getAllUsers();
-  res.status(200).json({
-    users,
-  });
-});
+  res.status(200).json(users);
+}
 
-export const handleGetAUser = createHandler(async (req, res) => {
+export async function handleGetAUser(req: Request<PathParams>, res: Response<UserRes>) {
   const userId = req.params.id as string;
   const user = await getAUser(userId);
-  res.status(200).json({
-    user,
-  });
-});
+  res.status(200).json(user);
+}
 
 // export const handleDeleteAllUnverifiedUsers = createHandler(async (_req, res) => {
 //   const unverfiedUsersCount = await deleteAllUnverifiedUsers();

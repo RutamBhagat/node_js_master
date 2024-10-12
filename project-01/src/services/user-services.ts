@@ -1,22 +1,14 @@
-import process from 'node:process';
 import crypto from 'node:crypto';
+import { type NewUser, users } from '@/schema/user';
+import { db } from '@/utils/db';
 import argon2 from 'argon2';
 import { eq } from 'drizzle-orm';
-import { type NewUser, type UpdateUser, type User, users } from '@/schema/user';
-import { db } from '@/utils/db';
 // import { sendVerificationEmail } from '@/utils/email';
 import { BackendError } from '@/utils/errors';
-import { sha256 } from '@/utils/hash'; 
 
-
-// export async function getUserByUserId(userId: string) {
-//   const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
-//   return user;
-// }
-
-export async function getUserByEmail(email: string){
+export async function getUserByEmail(email: string) {
   const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1);
-  return user
+  return user;
 }
 
 export async function addUser(user: NewUser) {
@@ -43,9 +35,10 @@ export async function addUser(user: NewUser) {
       email: users.email,
       gender: users.gender,
       jobTitle: users.jobTitle,
-      code: users.code,
-      isVerified: users.isVerified,
       isAdmin: users.isAdmin,
+      isVerified: users.isVerified,
+      createdAt: users.createdAt,
+      updatedAt: users.updatedAt,
     });
 
   if (!newUser) {
@@ -57,6 +50,25 @@ export async function addUser(user: NewUser) {
   return { user: newUser, code };
 }
 
+export async function deleteUser(email: string) {
+  const user = await getUserByEmail(email);
+
+  if (!user)
+    throw new BackendError('USER_NOT_FOUND');
+
+  const [deletedUser] = await db.delete(users).where(eq(users.email, email)).returning({
+    id: users.id,
+    name: users.firstName,
+    email: users.email,
+  });
+
+  return deletedUser;
+}
+
+// export async function getUserByUserId(userId: string) {
+//   const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
+//   return user;
+// }
 
 // export async function verifyUser(email: string, code: string) {
 //   const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1);
@@ -90,21 +102,6 @@ export async function addUser(user: NewUser) {
 //     });
 //   }
 // }
-
-export async function deleteUser(email: string) {
-  const user = await getUserByEmail(email);
-
-  if (!user)
-    throw new BackendError('USER_NOT_FOUND');
-
-  const [deletedUser] = await db.delete(users).where(eq(users.email, email)).returning({
-    id: users.id,
-    name: users.firstName,
-    email: users.email,
-  });
-
-  return deletedUser;
-}
 
 // export async function updateUser(user: User, { name, email, password }: UpdateUser) {
 //   let code: string | undefined;
