@@ -1,5 +1,5 @@
 import { Buffer } from 'node:buffer';
-import { deleteUserSchema, loginSchema, newUserSchema, updateUserSchema, type User } from '@/schema/user';
+import { deleteUserSchema, loginSchema, newUserSchema, updateUserSchema, type User, verifyUserSchema } from '@/schema/user';
 import { addUser, deleteUser, getUserByEmail, updateUser } from '@/services/user-services';
 import { createHandler } from '@/utils/create';
 import { BackendError } from '@/utils/errors';
@@ -92,8 +92,8 @@ export const handleDeleteUser = createHandler(deleteUserSchema, async (req, res)
 
   const { user } = res.locals as { user: User };
 
-  consola.log('Received Email:', email);
-  consola.log('Token User Email:', user.email);
+  // consola.log('Received Email:', email);
+  // consola.log('Token User Email:', user.email);
 
   if (user.email !== email) {
     throw new BackendError('UNAUTHORIZED', {

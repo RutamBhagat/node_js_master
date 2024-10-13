@@ -5,7 +5,7 @@ import {
   handleGetUser,
   handleUpdateUser,
   handleUserLogin,
-//   handleVerifyUser,
+  // handleVerifyUser,
 } from '@/controllers/user-controllers';
 import { authenticate } from '@/middlewares/auth';
 import { createRouter } from '@/utils/create';
@@ -13,8 +13,8 @@ import { createRouter } from '@/utils/create';
 export default createRouter((router: Router) => {
   router.get('/', authenticate(), handleGetUser);
   router.post('/create', handleAddUser);
-  //   router.get('/verify', (req, res, next) => handleVerifyUser(req, res, next));
   router.post('/login', handleUserLogin);
   router.delete('/remove', authenticate(), handleDeleteUser);
   router.put('/update', authenticate(), handleUpdateUser);
+  // router.get('/verify', (req, res, next) => handleVerifyUser(req, res, next));
 });
