@@ -1,6 +1,6 @@
 import { Buffer } from 'node:buffer';
-import { loginSchema, newUserSchema, updateUserSchema, type User } from '@/schema/user';
-import { addUser, getUserByEmail, updateUser } from '@/services/user-services';
+import { deleteUserSchema, loginSchema, newUserSchema, updateUserSchema, type User } from '@/schema/user';
+import { addUser, deleteUser, getUserByEmail, updateUser } from '@/services/user-services';
 import { createHandler } from '@/utils/create';
 import { BackendError } from '@/utils/errors';
 import generateToken from '@/utils/jwt';
@@ -87,6 +87,27 @@ export const handleUpdateUser = createHandler(updateUserSchema, async (req, res)
   });
 });
 
+export const handleDeleteUser = createHandler(deleteUserSchema, async (req, res) => {
+  const { email } = req.body;
+
+  const { user } = res.locals as { user: User };
+
+  consola.log('Received Email:', email);
+  consola.log('Token User Email:', user.email);
+
+  if (user.email !== email) {
+    throw new BackendError('UNAUTHORIZED', {
+      message: 'You are not authorized to delete this user',
+    });
+  }
+
+  const deletedUser = await deleteUser(email);
+
+  res.status(200).json({
+    user: deletedUser,
+  });
+});
+
 // export const handleVerifyUser = createHandler(verifyUserSchema, async (req, res) => {
 //   try {
 //     const { email, code } = req.query;
@@ -111,22 +132,4 @@ export const handleUpdateUser = createHandler(updateUserSchema, async (req, res)
 //     }
 //     throw err;
 //   }
-// });
-
-// export const handleDeleteUser = createHandler(deleteUserSchema, async (req, res) => {
-//   const { email } = req.body;
-
-//   const { user } = res.locals as { user: User };
-
-//   if (user.email !== email && !user.isAdmin) {
-//     throw new BackendError('UNAUTHORIZED', {
-//       message: 'You are not authorized to delete this user',
-//     });
-//   }
-
-//   const deletedUser = await deleteUser(email);
-
-//   res.status(200).json({
-//     user: deletedUser,
-//   });
 // });
