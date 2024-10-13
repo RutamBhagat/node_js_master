@@ -65,10 +65,10 @@ export async function deleteUser(email: string) {
   return deletedUser;
 }
 
-// export async function getUserByUserId(userId: string) {
-//   const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
-//   return user;
-// }
+export async function getUserByUserId(userId: string) {
+  const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
+  return user;
+}
 
 // export async function verifyUser(email: string, code: string) {
 //   const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1);

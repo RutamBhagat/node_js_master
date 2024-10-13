@@ -1,5 +1,5 @@
 import { Buffer } from 'node:buffer';
-import { loginSchema, newUserSchema } from '@/schema/user';
+import { loginSchema, newUserSchema, type User } from '@/schema/user';
 import { addUser, getUserByEmail } from '@/services/user-services';
 import { createHandler } from '@/utils/create';
 import { BackendError } from '@/utils/errors';
@@ -99,20 +99,24 @@ export const handleUserLogin = createHandler(loginSchema, async (req, res) => {
 //   });
 // });
 
-// export const handleGetUser = createHandler(async (_req, res) => {
-//   const { user } = res.locals as { user: User };
+export const handleGetUser = createHandler(async (_req, res) => {
+  const { user } = res.locals as { user: User };
 
-//   res.status(200).json({
-//     user: {
-//       id: user.id,
-//       name: user.name,
-//       email: user.email,
-//       isAdmin: user.isAdmin,
-//       isVerified: user.isVerified,
-//       created_at: user.created_at,
-//     },
-//   });
-// });
+  res.status(200).json({
+    user: {
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      gender: user.gender,
+      jobTitle: user.jobTitle,
+      isAdmin: user.isAdmin,
+      isVerified: user.isVerified,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    },
+  });
+});
 
 // export const handleUpdateUser = createHandler(updateUserSchema, async (req, res) => {
 //   const { user } = res.locals as { user: User };
