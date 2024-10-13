@@ -1,6 +1,6 @@
 import { Buffer } from 'node:buffer';
-import { loginSchema, newUserSchema, type User } from '@/schema/user';
-import { addUser, getUserByEmail } from '@/services/user-services';
+import { loginSchema, newUserSchema, updateUserSchema, type User } from '@/schema/user';
+import { addUser, getUserByEmail, updateUser } from '@/services/user-services';
 import { createHandler } from '@/utils/create';
 import { BackendError } from '@/utils/errors';
 import generateToken from '@/utils/jwt';
@@ -75,6 +75,18 @@ export const handleGetUser = createHandler(async (_req, res) => {
   });
 });
 
+export const handleUpdateUser = createHandler(updateUserSchema, async (req, res) => {
+  const { user } = res.locals as { user: User };
+
+  const { firstName, lastName, email, gender, jobTitle, password } = req.body;
+
+  const updatedUser = await updateUser(user, { firstName, lastName, email, gender, jobTitle, password });
+
+  res.status(200).json({
+    user: updatedUser,
+  });
+});
+
 // export const handleVerifyUser = createHandler(verifyUserSchema, async (req, res) => {
 //   try {
 //     const { email, code } = req.query;
@@ -116,17 +128,5 @@ export const handleGetUser = createHandler(async (_req, res) => {
 
 //   res.status(200).json({
 //     user: deletedUser,
-//   });
-// });
-
-// export const handleUpdateUser = createHandler(updateUserSchema, async (req, res) => {
-//   const { user } = res.locals as { user: User };
-
-//   const { name, password, email } = req.body;
-
-//   const updatedUser = await updateUser(user, { name, password, email });
-
-//   res.status(200).json({
-//     user: updatedUser,
 //   });
 // });

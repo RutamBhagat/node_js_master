@@ -1,10 +1,12 @@
 import crypto from 'node:crypto';
-import { type NewUser, users } from '@/schema/user';
+import process from 'node:process';
+import { type NewUser, type UpdateUser, type User, users } from '@/schema/user';
 import { db } from '@/utils/db';
 import argon2 from 'argon2';
 import { eq } from 'drizzle-orm';
 // import { sendVerificationEmail } from '@/utils/email';
 import { BackendError } from '@/utils/errors';
+import { sha256 } from '@/utils/hash';
 
 export async function getUserByEmail(email: string) {
   const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1);
@@ -70,6 +72,80 @@ export async function getUserByUserId(userId: string) {
   return user;
 }
 
+export async function updateUser(user: User, { firstName, lastName, email, gender, jobTitle, password }: UpdateUser) {
+  let code: string | undefined;
+  let hashedCode: string | undefined;
+
+  if (email) {
+    const user = await getUserByEmail(email);
+
+    if (user) {
+      throw new BackendError('CONFLICT', {
+        message: 'Email already in use',
+        details: { email },
+      });
+    }
+
+    code = crypto.randomBytes(32).toString('hex');
+    hashedCode = sha256.hash(code);
+  }
+
+  const [updatedUser] = await db
+    .update(users)
+    .set({
+      firstName,
+      lastName,
+      email,
+      gender,
+      jobTitle,
+      password,
+      code: hashedCode,
+      isVerified: hashedCode ? false : user.isVerified,
+    })
+    .where(eq(users.email, user.email))
+    .returning({
+      id: users.id,
+      firstName: users.firstName,
+      lastName: users.lastName,
+      email: users.email,
+      gender: users.gender,
+      jobTitle: users.jobTitle,
+      isAdmin: users.isAdmin,
+      isVerified: users.isVerified,
+      createdAt: users.createdAt,
+      updatedAt: users.updatedAt,
+    });
+
+  if (!updatedUser) {
+    throw new BackendError('USER_NOT_FOUND', {
+      message: 'User could not be updated',
+    });
+  }
+
+  // if (email && code) {
+  //   const { API_BASE_URL } = process.env;
+  //   const status = await sendVerificationEmail(
+  //     API_BASE_URL,
+  //     updatedUser.name,
+  //     updatedUser.email,
+  //     code,
+  //   );
+
+  //   if (status !== 200) {
+  //     await db
+  //       .update(users)
+  //       .set({ email: user.email, isVerified: user.isVerified })
+  //       .where(eq(users.email, updatedUser.email))
+  //       .returning();
+  //     throw new BackendError('BAD_REQUEST', {
+  //       message: 'Email could not be updated',
+  //     });
+  //   }
+  // }
+
+  return updatedUser;
+}
+
 // export async function verifyUser(email: string, code: string) {
 //   const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1);
 
@@ -101,71 +177,4 @@ export async function getUserByUserId(userId: string) {
 //       message: 'Failed to verify user',
 //     });
 //   }
-// }
-
-// export async function updateUser(user: User, { name, email, password }: UpdateUser) {
-//   let code: string | undefined;
-//   let hashedCode: string | undefined;
-
-//   if (email) {
-//     const user = await getUserByEmail(email);
-
-//     if (user) {
-//       throw new BackendError('CONFLICT', {
-//         message: 'Email already in use',
-//         details: { email },
-//       });
-//     }
-
-//     code = crypto.randomBytes(32).toString('hex');
-//     hashedCode = sha256.hash(code);
-//   }
-
-//   const [updatedUser] = await db
-//     .update(users)
-//     .set({
-//       name,
-//       password,
-//       email,
-//       code: hashedCode,
-//       isVerified: hashedCode ? false : user.isVerified,
-//     })
-//     .where(eq(users.email, user.email))
-//     .returning({
-//       id: users.id,
-//       name: users.name,
-//       email: users.email,
-//       isAdmin: users.isAdmin,
-//       isVerified: users.isVerified,
-//       created_at: users.created_at,
-//     });
-
-//   if (!updatedUser) {
-//     throw new BackendError('USER_NOT_FOUND', {
-//       message: 'User could not be updated',
-//     });
-//   }
-
-//   if (email && code) {
-//     const { API_BASE_URL } = process.env;
-//     const status = await sendVerificationEmail(
-//       API_BASE_URL,
-//       updatedUser.name,
-//       updatedUser.email,
-//       code,
-//     );
-
-//     if (status !== 200) {
-//       await db
-//         .update(users)
-//         .set({ email: user.email, isVerified: user.isVerified })
-//         .where(eq(users.email, updatedUser.email))
-//         .returning();
-//       throw new BackendError('BAD_REQUEST', {
-//         message: 'Email could not be updated',
-//       });
-//     }
-//   }
-
-//   return updatedUser;
 // }

@@ -67,8 +67,6 @@ export const updateUserSchema = z.object({
     gender: true,
     jobTitle: true,
     password: true,
-    salt: true,
-    code: true,
   }).partial(),
 });
 
