@@ -50,7 +50,6 @@ app.use(errorHandler);
 
 app.listen(PORT, () => {
   consola.info(`Server running at http://localhost:${PORT}`);
-  consola.info(`Swagger UI available at http://localhost:${PORT}/api-docs`);
 });
 
 export default app;
