@@ -5,10 +5,11 @@ import { createHandler } from '@/utils/create';
 import { BackendError } from '@/utils/errors';
 import generateToken from '@/utils/jwt';
 import argon2 from 'argon2';
+import consola from 'consola';
 
 export const handleAddUser = createHandler(newUserSchema, async (req, res) => {
   const user = req.body;
-
+  consola.log('Received body:', req.body);
   const existingUser = await getUserByEmail(user.email);
 
   if (existingUser) {
@@ -55,6 +56,25 @@ export const handleUserLogin = createHandler(loginSchema, async (req, res) => {
   res.status(200).json({ token });
 });
 
+export const handleGetUser = createHandler(async (_req, res) => {
+  const { user } = res.locals as { user: User };
+
+  res.status(200).json({
+    user: {
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      gender: user.gender,
+      jobTitle: user.jobTitle,
+      isAdmin: user.isAdmin,
+      isVerified: user.isVerified,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    },
+  });
+});
+
 // export const handleVerifyUser = createHandler(verifyUserSchema, async (req, res) => {
 //   try {
 //     const { email, code } = req.query;
@@ -98,25 +118,6 @@ export const handleUserLogin = createHandler(loginSchema, async (req, res) => {
 //     user: deletedUser,
 //   });
 // });
-
-export const handleGetUser = createHandler(async (_req, res) => {
-  const { user } = res.locals as { user: User };
-
-  res.status(200).json({
-    user: {
-      id: user.id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      gender: user.gender,
-      jobTitle: user.jobTitle,
-      isAdmin: user.isAdmin,
-      isVerified: user.isVerified,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
-    },
-  });
-});
 
 // export const handleUpdateUser = createHandler(updateUserSchema, async (req, res) => {
 //   const { user } = res.locals as { user: User };
