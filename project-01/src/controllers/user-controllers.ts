@@ -103,7 +103,7 @@ export const handleDeleteUser = createHandler(deleteUserSchema, async (req, res)
 
   const deletedUser = await deleteUser(email);
 
-  res.status(200).json({
+  res.status(204).json({
     user: deletedUser,
   });
 });
