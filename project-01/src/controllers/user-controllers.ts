@@ -1,12 +1,15 @@
-import type { newUserSchema } from '@/schema/user';
+import type { loginSchema, newUserSchema } from '@/schema/user';
 import type { Request, Response } from 'express';
 import type { z } from 'zod';
 import type { UserRes } from './admin-controllers';
+import { Buffer } from 'node:buffer';
 import { addUser, getUserByEmail } from '@/services/user-services';
 import { BackendError } from '@/utils/errors';
+import generateToken from '@/utils/jwt';
+import argon2 from 'argon2';
 
-// Infer the type of the request body from newUserSchema
 export type NewUserRequestBody = z.infer<typeof newUserSchema>['body'];
+export type UserLoginRequestBody = z.infer<typeof loginSchema>['body'];
 
 export async function handleAddUser(req: Request<object, object, NewUserRequestBody>, res: Response<UserRes>) {
   const user = req.body;
@@ -40,22 +43,22 @@ export async function handleAddUser(req: Request<object, object, NewUserRequestB
   res.status(201).json(addedUser);
 }
 
-// export const handleUserLogin = createHandler(loginSchema, async (req, res) => {
-//   const { email, password } = req.body;
-//   const user = await getUserByEmail(email);
+export async function handleUserLogin(req: Request<object, object, UserLoginRequestBody>, res: Response<{ token: string }>) {
+  const { email, password } = req.body;
+  const user = await getUserByEmail(email);
 
-//   if (!user)
-//     throw new BackendError('USER_NOT_FOUND');
+  if (!user)
+    throw new BackendError('USER_NOT_FOUND');
 
-//   const matchPassword = await argon2.verify(user.password, password, {
-//     salt: Buffer.from(user.salt, 'hex'),
-//   });
-//   if (!matchPassword)
-//     throw new BackendError('INVALID_PASSWORD');
+  const matchPassword = await argon2.verify(user.password, password, {
+    salt: Buffer.from(user.salt, 'hex'),
+  });
+  if (!matchPassword)
+    throw new BackendError('INVALID_PASSWORD');
 
-//   const token = generateToken(user.id);
-//   res.status(200).json({ token });
-// });
+  const token = generateToken(user.id);
+  res.status(200).json({ token });
+}
 
 // export const handleVerifyUser = createHandler(verifyUserSchema, async (req, res) => {
 //   try {

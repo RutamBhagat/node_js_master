@@ -2,11 +2,12 @@ import type { Router } from 'express';
 import type { Tspec } from 'tspec';
 import {
   handleAddUser,
+  handleUserLogin,
   type NewUserRequestBody,
+  type UserLoginRequestBody,
 //   handleDeleteUser,
 //   handleGetUser,
 //   handleUpdateUser,
-//   handleUserLogin,
 //   handleVerifyUser,
 } from '@/controllers/user-controllers';
 import { createRouter } from '@/utils/create';
@@ -23,14 +24,21 @@ export type UserApiSpec = Tspec.DefineApiSpec<{
         handler: typeof handleAddUser;
       };
     };
+    '/login': {
+      post: {
+        summary: 'Login a user';
+        requestBody: UserLoginRequestBody;
+        handler: typeof handleUserLogin;
+      };
+    };
   };
 }>;
 
 export default createRouter((router: Router) => {
 //   router.get('/', authenticate(), handleGetUser);
   router.post('/create', handleAddUser);
-//   router.get('/verify', (req, res, next) => handleVerifyUser(req, res, next));
-//   router.post('/login', handleUserLogin);
+  //   router.get('/verify', (req, res, next) => handleVerifyUser(req, res, next));
+  router.post('/login', handleUserLogin);
 //   router.post('/remove', authenticate(), handleDeleteUser);
 //   router.put('/update', authenticate(), handleUpdateUser);
 });
