@@ -36,9 +36,6 @@
     "postgres": "^3.4.3",
     "react": "^18.2.0",
     "request-ip": "^3.3.0",
-    "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.1",
-    "tspec": "^0.1.116",
     "zod": "^3.22.4"
   },
   "devDependencies": {

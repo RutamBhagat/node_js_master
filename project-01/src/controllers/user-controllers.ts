@@ -1,17 +1,12 @@
-import type { loginSchema, newUserSchema } from '@/schema/user';
-import type { Request, Response } from 'express';
-import type { z } from 'zod';
-import type { UserRes } from './admin-controllers';
 import { Buffer } from 'node:buffer';
+import { loginSchema, newUserSchema } from '@/schema/user';
 import { addUser, getUserByEmail } from '@/services/user-services';
+import { createHandler } from '@/utils/create';
 import { BackendError } from '@/utils/errors';
 import generateToken from '@/utils/jwt';
 import argon2 from 'argon2';
 
-export type NewUserRequestBody = z.infer<typeof newUserSchema>['body'];
-export type UserLoginRequestBody = z.infer<typeof loginSchema>['body'];
-
-export async function handleAddUser(req: Request<object, object, NewUserRequestBody>, res: Response<UserRes>) {
+export const handleAddUser = createHandler(newUserSchema, async (req, res) => {
   const user = req.body;
 
   const existingUser = await getUserByEmail(user.email);
@@ -41,9 +36,9 @@ export async function handleAddUser(req: Request<object, object, NewUserRequestB
   // }
 
   res.status(201).json(addedUser);
-}
+});
 
-export async function handleUserLogin(req: Request<object, object, UserLoginRequestBody>, res: Response<{ token: string }>) {
+export const handleUserLogin = createHandler(loginSchema, async (req, res) => {
   const { email, password } = req.body;
   const user = await getUserByEmail(email);
 
@@ -58,7 +53,7 @@ export async function handleUserLogin(req: Request<object, object, UserLoginRequ
 
   const token = generateToken(user.id);
   res.status(200).json({ token });
-}
+});
 
 // export const handleVerifyUser = createHandler(verifyUserSchema, async (req, res) => {
 //   try {
