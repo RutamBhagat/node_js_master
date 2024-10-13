@@ -14,7 +14,7 @@ export const users = pgTable('users', {
   jobTitle: varchar('jobTitle', { length: 255 }).notNull(),
   isAdmin: boolean('is_admin').notNull().default(false),
   password: text('password').notNull(),
-  isVerified: boolean('is_verified').notNull().default(false),
+  isVerified: boolean('is_verified').notNull().default(true),
   salt: text('salt').notNull(),
   code: text('code').notNull(),
   createdAt: timestamp('created_at').notNull().defaultNow(),
