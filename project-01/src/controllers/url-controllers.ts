@@ -18,7 +18,7 @@ export const handleGenerateNewShortURL = createHandler(addUrlSchema, async (req,
     });
   }
 
-  const { newURL } = await addUrl({ redirectURL, userId: user.id });
+  const { newURL } = await addUrl({ redirectURL }, user.id);
 
   res.status(201).json({ newURL });
 });

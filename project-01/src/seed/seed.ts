@@ -22,17 +22,15 @@ function generateUser(): NewUser {
   };
 }
 
-function generateUrl(userId: string): NewUrl {
+function generateUrl(): NewUrl {
   return {
     redirectURL: faker.internet.url(),
-    userId,
   };
 }
 
-function generateVisitHistory(urlId: string, userId: string): NewVisitHistory {
+function generateVisitHistory(urlId: string): NewVisitHistory {
   return {
     urlId,
-    userId,
   };
 }
 
@@ -48,19 +46,19 @@ async function seedDatabase() {
 
       const numUrls = faker.number.int({ min: 1, max: MAX_URLS_PER_USER });
       for (let j = 0; j < numUrls; j++) {
-        const urlData = generateUrl(newUser.id);
+        const urlData = generateUrl();
         consola.info(`Creating URL for user: ${newUser.email}`);
 
         try {
-          const { newURL } = await addUrl(urlData);
+          const { newURL } = await addUrl(urlData, newUser.id);
 
           const numVisits = faker.number.int({ min: 1, max: MAX_VISITS_PER_URL });
           for (let k = 0; k < numVisits; k++) {
-            const visitData = generateVisitHistory(newURL.id, newUser.id);
+            const visitData = generateVisitHistory(newURL.id);
             consola.info(`Creating visit history for URL: ${newURL.shortID}`);
 
             try {
-              await addVisit(visitData);
+              await addVisit(visitData, newUser.id);
             }
             catch (error) {
               consola.error(`Error creating visit history: ${error}`);

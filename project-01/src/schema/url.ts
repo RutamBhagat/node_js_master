@@ -31,7 +31,6 @@ export const selectUrlSchema = createSelectSchema(urls, {
 export const addUrlSchema = z.object({
   body: selectUrlSchema.pick({
     redirectURL: true,
-    userId: true,
   }),
 });
 

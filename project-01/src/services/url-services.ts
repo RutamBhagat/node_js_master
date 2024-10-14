@@ -10,8 +10,8 @@ export async function getURLByRedirectURL(redirectURL: string) {
   return user;
 }
 
-export async function addUrl(url: NewUrl) {
-  const { redirectURL, userId } = url;
+export async function addUrl(url: NewUrl, userId: string) {
+  const { redirectURL } = url;
   const shortID = crypto.randomBytes(8).toString('hex');
 
   const [newURL] = await db
@@ -39,8 +39,8 @@ export async function addUrl(url: NewUrl) {
   return { newURL };
 }
 
-export async function addVisit(visit: NewVisitHistory) {
-  const { urlId, userId } = visit;
+export async function addVisit(visit: NewVisitHistory, userId: string) {
+  const { urlId } = visit;
 
   const [newVisitHistory] = await db
     .insert(visitHistory)

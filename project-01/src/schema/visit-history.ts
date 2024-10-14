@@ -31,7 +31,6 @@ export const selectVisitHistorySchema = createSelectSchema(visitHistory, {
 export const addVisitHistorySchema = z.object({
   body: selectVisitHistorySchema.pick({
     urlId: true,
-    userId: true,
   }),
 });
 
