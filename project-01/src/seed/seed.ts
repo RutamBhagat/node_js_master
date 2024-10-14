@@ -1,6 +1,4 @@
-import type { NewUrl } from '@/schema/url';
 import type { NewUser } from '@/schema/user';
-import type { NewVisitHistory } from '@/schema/visit-history';
 import process from 'node:process';
 import { addUrl, addVisit } from '@/services/url-services';
 import { addUser } from '@/services/user-services';
@@ -22,18 +20,6 @@ function generateUser(): NewUser {
   };
 }
 
-function generateUrl(): NewUrl {
-  return {
-    redirectURL: faker.internet.url(),
-  };
-}
-
-function generateVisitHistory(urlId: string): NewVisitHistory {
-  return {
-    urlId,
-  };
-}
-
 async function seedDatabase() {
   consola.info('Starting database seeding...');
 
@@ -46,19 +32,19 @@ async function seedDatabase() {
 
       const numUrls = faker.number.int({ min: 1, max: MAX_URLS_PER_USER });
       for (let j = 0; j < numUrls; j++) {
-        const urlData = generateUrl();
         consola.info(`Creating URL for user: ${newUser.email}`);
 
         try {
-          const { newURL } = await addUrl(urlData, newUser.id);
+          const { newURL } = await addUrl({
+            redirectURL: faker.internet.url(),
+          }, newUser.id);
 
           const numVisits = faker.number.int({ min: 1, max: MAX_VISITS_PER_URL });
           for (let k = 0; k < numVisits; k++) {
-            const visitData = generateVisitHistory(newURL.id);
             consola.info(`Creating visit history for URL: ${newURL.shortID}`);
 
             try {
-              await addVisit(visitData, newUser.id);
+              await addVisit({ urlId: newURL.id }, newUser.id);
             }
             catch (error) {
               consola.error(`Error creating visit history: ${error}`);
