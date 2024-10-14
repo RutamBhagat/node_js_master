@@ -24,7 +24,6 @@ export const selectUrlSchema = createSelectSchema(urls, {
 
 export const addUrlSchema = z.object({
   body: selectUrlSchema.pick({
-    shortID: true,
     redirectURL: true,
   }),
 });
