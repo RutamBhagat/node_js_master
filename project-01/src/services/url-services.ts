@@ -4,7 +4,7 @@ import { type NewUrl, urls } from '@/schema/url';
 import { type NewVisitHistory, visitHistory } from '@/schema/visit-history';
 import { db } from '@/utils/db';
 import { BackendError } from '@/utils/errors';
-import { and, eq } from 'drizzle-orm';
+import { and, count, eq } from 'drizzle-orm';
 
 export async function getRedirectURLForCurrentUser(redirectURL: string, userId: string) {
   const [url] = await db
@@ -92,27 +92,12 @@ export async function getRedirectURLByID(shortId: string) {
   return url;
 }
 
-export async function getRedirectURLVisits(shortId: string) {
-  const visits = await db
-    .select({
-      urls: {
-        shortID: urls.shortID,
-        redirectURL: urls.redirectURL,
-      },
-      visitHistory: {
-        id: visitHistory.id,
-        urlId: visitHistory.urlId,
-        userId: visitHistory.userId,
-        createdAt: visitHistory.createdAt,
-      },
-    })
-    .from(urls)
-    .leftJoin(
-      visitHistory,
-      eq(urls.id, visitHistory.urlId),
-    )
-    .where(
-      eq(urls.shortID, shortId),
-    );
-  return visits;
+export async function getRedirectURLVisitCount(shortId: string) {
+  const [result] = await db
+    .select({ count: count() })
+    .from(visitHistory)
+    .leftJoin(urls, eq(visitHistory.urlId, urls.id))
+    .where(eq(urls.shortID, shortId));
+
+  return result?.count;
 }

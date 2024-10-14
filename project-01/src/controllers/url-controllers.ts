@@ -1,6 +1,6 @@
 import type { User } from '@/schema/user';
 import { addUrlSchema } from '@/schema/url';
-import { addUrl, addVisit, getRedirectURLByID, getRedirectURLForCurrentUser, getRedirectURLVisits } from '@/services/url-services';
+import { addUrl, addVisit, getRedirectURLByID, getRedirectURLForCurrentUser, getRedirectURLVisitCount } from '@/services/url-services';
 import { createHandler } from '@/utils/create';
 import { BackendError, getStatusFromErrorCode } from '@/utils/errors';
 import consola from 'consola';
@@ -42,13 +42,8 @@ export const handleRedirectURL = createHandler(
 export const handleGetURLVisits = createHandler(
   async (req, res) => {
     const shortId = req.params.id as string;
-    const visits = await getRedirectURLVisits(shortId);
+    const visitCount = await getRedirectURLVisitCount(shortId);
 
-    if (visits && visits.length) {
-      res.status(200).json({ visits, hits: visits.length });
-    }
-    else {
-      res.status(getStatusFromErrorCode('NOT_FOUND'));
-    }
+    res.status(200).json({ visitCount });
   },
 );
