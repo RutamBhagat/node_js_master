@@ -1,6 +1,6 @@
 import type { User } from '@/schema/user';
 import { addUrlSchema } from '@/schema/url';
-import { addUrl, getURLByRedirectURL } from '@/services/url-services';
+import { addUrl, getRedirectURLForCurrentUser } from '@/services/url-services';
 import { createHandler } from '@/utils/create';
 import { BackendError } from '@/utils/errors';
 import consola from 'consola';
@@ -10,11 +10,11 @@ export const handleGenerateNewShortURL = createHandler(addUrlSchema, async (req,
   const { redirectURL } = req.body;
   consola.log('Received URL body:', redirectURL);
 
-  const existingRedirectURL = await getURLByRedirectURL(redirectURL);
+  const existingRedirectURL = await getRedirectURLForCurrentUser(redirectURL, user.id);
 
   if (existingRedirectURL) {
     throw new BackendError('CONFLICT', {
-      message: 'User already exists',
+      message: 'Redirection URL already exists for current User',
     });
   }
 

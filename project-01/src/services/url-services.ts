@@ -3,10 +3,19 @@ import { type NewUrl, urls } from '@/schema/url';
 import { type NewVisitHistory, visitHistory } from '@/schema/visit-history';
 import { db } from '@/utils/db';
 import { BackendError } from '@/utils/errors';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 
-export async function getURLByRedirectURL(redirectURL: string) {
-  const [user] = await db.select().from(urls).where(eq(urls.redirectURL, redirectURL)).limit(1);
+export async function getRedirectURLForCurrentUser(redirectURL: string, userId: string) {
+  const [user] = await db
+    .select()
+    .from(urls)
+    .where(
+      and(
+        eq(urls.redirectURL, redirectURL),
+        eq(urls.userId, userId),
+      ),
+    )
+    .limit(1);
   return user;
 }
 
