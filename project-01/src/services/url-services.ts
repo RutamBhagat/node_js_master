@@ -1,4 +1,5 @@
 import crypto from 'node:crypto';
+import { url } from 'node:inspector';
 import { type NewUrl, urls } from '@/schema/url';
 import { type NewVisitHistory, visitHistory } from '@/schema/visit-history';
 import { db } from '@/utils/db';
@@ -73,7 +74,7 @@ export async function addVisit(visit: NewVisitHistory, userId: string) {
   return { newVisitHistory };
 }
 
-export async function getRedirectURLByID(shortId: string, userId: string) {
+export async function getRedirectURLByID(shortId: string) {
   const [url] = await db
     .select({
       id: urls.id,
@@ -85,11 +86,33 @@ export async function getRedirectURLByID(shortId: string, userId: string) {
     })
     .from(urls)
     .where(
-      and(
-        eq(urls.shortID, shortId),
-        eq(urls.userId, userId),
-      ),
+      eq(urls.shortID, shortId),
     )
     .limit(1);
   return url;
+}
+
+export async function getRedirectURLVisits(shortId: string) {
+  const visits = await db
+    .select({
+      urls: {
+        shortID: urls.shortID,
+        redirectURL: urls.redirectURL,
+      },
+      visitHistory: {
+        id: visitHistory.id,
+        urlId: visitHistory.urlId,
+        userId: visitHistory.userId,
+        createdAt: visitHistory.createdAt,
+      },
+    })
+    .from(urls)
+    .leftJoin(
+      visitHistory,
+      eq(urls.id, visitHistory.urlId),
+    )
+    .where(
+      eq(urls.shortID, shortId),
+    );
+  return visits;
 }
