@@ -1,5 +1,6 @@
 import crypto from 'node:crypto';
 import { type NewUrl, urls } from '@/schema/url';
+import { type NewVisitHistory, visitHistory } from '@/schema/visit-history';
 import { db } from '@/utils/db';
 import { BackendError } from '@/utils/errors';
 import { eq } from 'drizzle-orm';
@@ -36,4 +37,29 @@ export async function addUrl(url: NewUrl) {
   }
 
   return { newURL };
+}
+
+export async function addVisit(visit: NewVisitHistory) {
+  const { urlId, userId } = visit;
+
+  const [newVisitHistory] = await db
+    .insert(visitHistory)
+    .values({
+      urlId,
+      userId,
+    })
+    .returning({
+      id: visitHistory.id,
+      urlId: visitHistory.urlId,
+      userId: visitHistory.userId,
+      createdAt: visitHistory.createdAt,
+    });
+
+  if (!newVisitHistory) {
+    throw new BackendError('INTERNAL_ERROR', {
+      message: 'Failed to add visit',
+    });
+  }
+
+  return { newVisitHistory };
 }
