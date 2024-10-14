@@ -56,6 +56,17 @@ export const handleUserLogin = createHandler(loginSchema, async (req, res) => {
   res.status(200).json({ token });
 });
 
+export const handleUserLoginWithoutVerification = createHandler(loginSchema, async (req, res) => {
+  const { email } = req.body;
+  const user = await getUserByEmail(email);
+
+  if (!user)
+    throw new BackendError('USER_NOT_FOUND');
+
+  const token = generateToken(user.id);
+  res.status(200).json({ token });
+});
+
 export const handleGetUser = createHandler(async (_req, res) => {
   const { user } = res.locals as { user: User };
 
