@@ -44,7 +44,7 @@ async function seedDatabase() {
             consola.info(`Creating visit history for URL: ${newURL.shortID}`);
 
             try {
-              await addVisit({ urlId: newURL.id }, newUser.id);
+              await addVisit({ urlId: newURL.id });
             }
             catch (error) {
               consola.error(`Error creating visit history: ${error}`);

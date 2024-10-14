@@ -25,7 +25,6 @@ export const users = pgTable('users', {
 
 export const userRelations = relations(users, ({ many }) => ({
   urls: many(urls),
-  visitHistories: many(visitHistory),
 }));
 
 export const selectUserSchema = createSelectSchema(users, {

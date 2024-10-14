@@ -25,12 +25,11 @@ export const handleGenerateNewShortURL = createHandler(addUrlSchema, async (req,
 
 export const handleRedirectURL = createHandler(
   async (req, res) => {
-    const { user } = res.locals as { user: User };
     const shortId = req.params.id as string;
     const url = await getRedirectURLByID(shortId);
 
     if (url && url.redirectURL) {
-      addVisit({ urlId: url.id }, user.id);
+      addVisit({ urlId: url.id });
       res.redirect(url.redirectURL);
     }
     else {

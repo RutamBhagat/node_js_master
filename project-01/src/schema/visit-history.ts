@@ -8,7 +8,6 @@ import { users } from './user';
 export const visitHistory = pgTable('visit_history', {
   id: uuid('id').notNull().primaryKey().defaultRandom(),
   urlId: uuid('url_id').notNull().references(() => urls.id, { onDelete: 'cascade' }),
-  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   createdAt: timestamp('created_at').notNull().defaultNow(),
 });
 
@@ -17,15 +16,10 @@ export const visitHistoryRelations = relations(visitHistory, ({ one }) => ({
     fields: [visitHistory.urlId],
     references: [urls.id],
   }),
-  user: one(users, {
-    fields: [visitHistory.userId],
-    references: [users.id],
-  }),
 }));
 
 export const selectVisitHistorySchema = createSelectSchema(visitHistory, {
   urlId: schema => schema.urlId.uuid(),
-  userId: schema => schema.userId.uuid(),
 });
 
 export const addVisitHistorySchema = z.object({

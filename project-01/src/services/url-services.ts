@@ -49,19 +49,17 @@ export async function addUrl(url: NewUrl, userId: string) {
   return { newURL };
 }
 
-export async function addVisit(visit: NewVisitHistory, userId: string) {
+export async function addVisit(visit: NewVisitHistory) {
   const { urlId } = visit;
 
   const [newVisitHistory] = await db
     .insert(visitHistory)
     .values({
       urlId,
-      userId,
     })
     .returning({
       id: visitHistory.id,
       urlId: visitHistory.urlId,
-      userId: visitHistory.userId,
       createdAt: visitHistory.createdAt,
     });
 

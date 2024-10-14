@@ -8,8 +8,7 @@ import { authenticate } from '@/middlewares/auth';
 import { createRouter } from '@/utils/create';
 
 export default createRouter((router: Router) => {
-  router.use(authenticate());
-  router.post('/', handleGenerateNewShortURL);
-  router.get('/:id', handleRedirectURL);
+  router.post('/', authenticate(), handleGenerateNewShortURL);
+  router.get('/:id', authenticate(), handleRedirectURL);
   router.get('/analytics/:id', handleGetURLVisits);
 });
