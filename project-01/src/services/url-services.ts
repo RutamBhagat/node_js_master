@@ -6,7 +6,7 @@ import { BackendError } from '@/utils/errors';
 import { and, eq } from 'drizzle-orm';
 
 export async function getRedirectURLForCurrentUser(redirectURL: string, userId: string) {
-  const [user] = await db
+  const [url] = await db
     .select()
     .from(urls)
     .where(
@@ -16,7 +16,7 @@ export async function getRedirectURLForCurrentUser(redirectURL: string, userId: 
       ),
     )
     .limit(1);
-  return user;
+  return url;
 }
 
 export async function addUrl(url: NewUrl, userId: string) {
@@ -71,4 +71,25 @@ export async function addVisit(visit: NewVisitHistory, userId: string) {
   }
 
   return { newVisitHistory };
+}
+
+export async function getRedirectURLByID(shortId: string, userId: string) {
+  const [url] = await db
+    .select({
+      id: urls.id,
+      shortID: urls.shortID,
+      redirectURL: urls.redirectURL,
+      userId: urls.userId,
+      createdAt: urls.createdAt,
+      updatedAt: urls.updatedAt,
+    })
+    .from(urls)
+    .where(
+      and(
+        eq(urls.shortID, shortId),
+        eq(urls.userId, userId),
+      ),
+    )
+    .limit(1);
+  return url;
 }

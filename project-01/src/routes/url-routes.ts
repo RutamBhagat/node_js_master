@@ -1,6 +1,7 @@
 import type { Router } from 'express';
 import {
   handleGenerateNewShortURL,
+  handleRedirectURL,
 } from '@/controllers/url-controllers';
 import { authenticate } from '@/middlewares/auth';
 import { createRouter } from '@/utils/create';
@@ -8,6 +9,6 @@ import { createRouter } from '@/utils/create';
 export default createRouter((router: Router) => {
   router.use(authenticate());
   router.post('/', handleGenerateNewShortURL);
-  // router.get('/:id', handleAddUser);
+  router.get('/:id', handleRedirectURL);
   // router.get('/analytics/:id', handleAddUser);
 });

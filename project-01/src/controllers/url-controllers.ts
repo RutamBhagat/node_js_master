@@ -1,8 +1,8 @@
 import type { User } from '@/schema/user';
 import { addUrlSchema } from '@/schema/url';
-import { addUrl, getRedirectURLForCurrentUser } from '@/services/url-services';
+import { addUrl, getRedirectURLByID, getRedirectURLForCurrentUser } from '@/services/url-services';
 import { createHandler } from '@/utils/create';
-import { BackendError } from '@/utils/errors';
+import { BackendError, getStatusFromErrorCode } from '@/utils/errors';
 import consola from 'consola';
 
 export const handleGenerateNewShortURL = createHandler(addUrlSchema, async (req, res) => {
@@ -22,3 +22,18 @@ export const handleGenerateNewShortURL = createHandler(addUrlSchema, async (req,
 
   res.status(201).json({ newURL });
 });
+
+export const handleRedirectURL = createHandler(
+  async (req, res) => {
+    const { user } = res.locals as { user: User };
+    const shortId = req.params.id as string;
+    const url = await getRedirectURLByID(shortId, user.id);
+
+    if (url && url.redirectURL) {
+      res.redirect(url.redirectURL);
+    }
+    else {
+      res.status(getStatusFromErrorCode('NOT_FOUND'));
+    }
+  },
+);

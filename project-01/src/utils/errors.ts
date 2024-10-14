@@ -3,7 +3,7 @@ import consola from 'consola';
 import postgres from 'postgres';
 import { ZodError } from 'zod';
 
-type HttpErrorCode =
+export type HttpErrorCode =
   | 'BAD_REQUEST'
   | 'UNAUTHORIZED'
   | 'NOT_FOUND'
