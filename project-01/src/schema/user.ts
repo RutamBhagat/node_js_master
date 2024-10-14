@@ -9,11 +9,11 @@ export const Gender = pgEnum('gender', ['MALE', 'FEMALE']);
 
 export const users = pgTable('users', {
   id: uuid('id').notNull().primaryKey().defaultRandom(),
-  firstName: varchar('firstName', { length: 255 }).notNull(),
-  lastName: varchar('lastName', { length: 255 }).notNull(),
+  firstName: varchar('first_name', { length: 255 }).notNull(),
+  lastName: varchar('last_name', { length: 255 }).notNull(),
   email: text('email').notNull().unique(),
   gender: Gender('gender').notNull(),
-  jobTitle: varchar('jobTitle', { length: 255 }).notNull(),
+  jobTitle: varchar('job_title', { length: 255 }).notNull(),
   isAdmin: boolean('is_admin').notNull().default(false),
   password: text('password').notNull(),
   isVerified: boolean('is_verified').notNull().default(true),

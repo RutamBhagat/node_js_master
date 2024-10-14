@@ -10,7 +10,7 @@ export async function getURLByRedirectURL(redirectURL: string) {
 }
 
 export async function addUrl(url: NewUrl) {
-  const { redirectURL } = url;
+  const { redirectURL, userId } = url;
   const shortID = crypto.randomBytes(8).toString('hex');
 
   const [newURL] = await db
@@ -18,11 +18,13 @@ export async function addUrl(url: NewUrl) {
     .values({
       redirectURL,
       shortID,
+      userId,
     })
     .returning({
       id: urls.id,
       shortID: urls.shortID,
       redirectURL: urls.redirectURL,
+      userId: urls.userId,
       createdAt: urls.createdAt,
       updatedAt: urls.updatedAt,
     });
