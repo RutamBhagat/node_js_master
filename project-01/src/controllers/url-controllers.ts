@@ -1,6 +1,6 @@
 import type { User } from '@/schema/user';
 import { addUrlSchema } from '@/schema/url';
-import { addUrl, getRedirectURLByID, getRedirectURLForCurrentUser } from '@/services/url-services';
+import { addUrl, addVisit, getRedirectURLByID, getRedirectURLForCurrentUser } from '@/services/url-services';
 import { createHandler } from '@/utils/create';
 import { BackendError, getStatusFromErrorCode } from '@/utils/errors';
 import consola from 'consola';
@@ -30,6 +30,7 @@ export const handleRedirectURL = createHandler(
     const url = await getRedirectURLByID(shortId, user.id);
 
     if (url && url.redirectURL) {
+      addVisit({ urlId: url.id }, user.id);
       res.redirect(url.redirectURL);
     }
     else {
