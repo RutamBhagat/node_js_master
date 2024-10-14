@@ -31,7 +31,7 @@ export async function addUrl(url: NewUrl) {
 
   if (!newURL) {
     throw new BackendError('INTERNAL_ERROR', {
-      message: 'Failed to add user',
+      message: 'Failed to add URL',
     });
   }
 
