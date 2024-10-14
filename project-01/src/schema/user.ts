@@ -1,7 +1,10 @@
 import type { InferSelectModel } from 'drizzle-orm';
+import { relations } from 'drizzle-orm';
 import { boolean, pgEnum, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
 import { createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
+import { urls } from './url';
+import { visitHistory } from './visit-history';
 
 export const Gender = pgEnum('gender', ['MALE', 'FEMALE']);
 
@@ -20,6 +23,11 @@ export const users = pgTable('users', {
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
+
+export const userRelations = relations(users, ({ many }) => ({
+  urls: many(urls),
+  visitHistories: many(visitHistory),
+}));
 
 export const selectUserSchema = createSelectSchema(users, {
   email: schema =>
